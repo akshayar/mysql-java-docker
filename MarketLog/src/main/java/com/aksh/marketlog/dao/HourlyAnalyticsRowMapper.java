@@ -14,7 +14,7 @@ public class HourlyAnalyticsRowMapper implements RowMapper<HourlyAnalytics> {
 		// TODO Auto-generated method stub
 		HourlyAnalytics hourlyAnalytics=new HourlyAnalytics();
 		hourlyAnalytics.setId(rs.getInt("ID"));
-		hourlyAnalytics.setHour(rs.getDate("HOUR"));
+		hourlyAnalytics.setHour(rs.getTime("HOUR"));
 		hourlyAnalytics.setMinPrice(rs.getFloat("MIN_PRICE"));
 		hourlyAnalytics.setMaxPrice(rs.getFloat("MAX_PRICE"));
 		hourlyAnalytics.setAvgPrice(rs.getFloat("AVG_PRICE"));

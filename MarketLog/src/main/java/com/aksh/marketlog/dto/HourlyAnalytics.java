@@ -1,15 +1,15 @@
 package com.aksh.marketlog.dto;
 
-import java.util.Date;
+import java.sql.Time;
 
 public class HourlyAnalytics extends DailyAnalytics{
-	private Date hour;
+	private Time hour;
 
-	public Date getHour() {
+	public Time getHour() {
 		return hour;
 	}
 
-	public void setHour(Date hour) {
+	public void setHour(Time hour) {
 		this.hour = hour;
 	}
 	

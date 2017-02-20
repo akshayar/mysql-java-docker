@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.5.1.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -66,6 +66,10 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -74,8 +78,126 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.aksh.marketlog.MarketLogApplication</mainClass>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.19.0</version>
+						<configuration>
+							<machine>
+								<name>akshaya1</name>
+							</machine>
+							<images>
+								<image>
+									<name>marketlog</name>
+									<build>
+										<from>java:8</from>
+										<assembly>
+											<descriptorRef>artifact</descriptorRef>
+										</assembly>
+										<ports>
+											<port>8080</port>
+										</ports>
+										<cmd>java -jar maven/${project.name}-${project.version}.jar</cmd>
+									</build>
+									<run>
+										<ports>
+											<port>8080:8080</port>
+										</ports>
+										<links>
+											<link>marketlog_d:db</link>
+										</links>
+										<!-- <wait> <time>15000</time> <url>http://192.168.99.100:8080/info/ping</url> 
+											</wait> -->
+										<wait>
+											<time>20000</time>
+										</wait>
+									</run>
+								</image>
+								<image>
+									<alias>marketlog_d</alias>
+									<name>mysql:5.5</name>
+									<run>
+										<env>
+											<MYSQL_ROOT_PASSWORD>aks123</MYSQL_ROOT_PASSWORD>
+											<MYSQL_DATABASE>marketlogd</MYSQL_DATABASE>
+										</env>
+										<wait>
+											<time>20000</time>
+										</wait>
+									</run>
+								</image>
+
+							</images>
+						</configuration>
+						<executions>
+							<execution>
+								<id>docker:build</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>docker:start</id>
+								<phase>install</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>docker:stop</id>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>start</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<!-- "build" should be used to create the images with the artifact -->
+									<goal>build</goal>
+									<goal>start</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>stop</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 </project>

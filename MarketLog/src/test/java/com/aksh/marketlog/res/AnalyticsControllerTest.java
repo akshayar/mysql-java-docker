@@ -2,6 +2,7 @@ package com.aksh.marketlog.res;
 
 import static org.junit.Assert.assertEquals;
 
+import java.sql.Time;
 import java.util.Date;
 
 import org.junit.Test;
@@ -13,11 +14,13 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.aksh.marketlog.dto.HourlyAnalytics;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("ut")
 public class AnalyticsControllerTest {
 
 
@@ -37,7 +40,7 @@ public class AnalyticsControllerTest {
 		Date executionTime=new Date();
 		HourlyAnalytics exec=new HourlyAnalytics();
 		exec.setStock("AAPL");
-		exec.setHour(new Date());
+		exec.setHour(new Time(System.currentTimeMillis()));
 		exec.setTradeDate(new Date());
 		exec.setEntryTime(executionTime);
 		
