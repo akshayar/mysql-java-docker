@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aksh.marketlog.dao.MarketDataRepository;
+import com.aksh.marketlog.dto.Execution;
+import com.aksh.marketlog.dto.ExecutionMessage;
 import com.aksh.marketlog.dto.NewOrder;
 
 @RestController
@@ -40,9 +42,16 @@ public class OrderControler {
 	
 	
 	@RequestMapping(method=RequestMethod.POST,path="/save")
-	public NewOrder saveOrder(@RequestBody NewOrder order){
+	public NewOrder addOrder(@RequestBody NewOrder order){
 		logger.info("Order - "+order);
 		return repository.save(order);
+	}
+	
+	@RequestMapping(method=RequestMethod.POST,path="/execute")
+	public Execution execute(@RequestParam(value="refId") int refId,@RequestBody ExecutionMessage executionMessage){
+		logger.info("RefId:"+refId+"exec:"+executionMessage);
+		return repository.fillOrder(refId, executionMessage);
+		
 	}
 
 	

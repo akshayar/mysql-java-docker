@@ -173,6 +173,7 @@
 							</execution>
 							<execution>
 								<id>docker:stop</id>
+								<phase>install</phase>
 								<goals>
 									<goal>stop</goal>
 								</goals>

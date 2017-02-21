@@ -5,6 +5,8 @@ package com.aksh.marketlog.dto;
 
 import java.util.Date;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * @author arawa3
  *
@@ -13,11 +15,12 @@ public class NewOrder {
 
 	private int id;
 	private int refId;
-	private char type;
+	private OrderType type;
 	private String stock;
 	private float price;
 	private int qty;
-	private char status;
+	private int remainingQty;
+	private OrderStatus status;
 	private Date entryTime;
 	private Date lastUpdate;
 	public int getId() {
@@ -32,10 +35,10 @@ public class NewOrder {
 	public void setRefId(int refId) {
 		this.refId = refId;
 	}
-	public char getType() {
+	public OrderType getType() {
 		return type;
 	}
-	public void setType(char type) {
+	public void setType(OrderType type) {
 		this.type = type;
 	}
 	public String getStock() {
@@ -56,10 +59,10 @@ public class NewOrder {
 	public void setQty(int qty) {
 		this.qty = qty;
 	}
-	public char getStatus() {
+	public OrderStatus getStatus() {
 		return status;
 	}
-	public void setStatus(char status) {
+	public void setStatus(OrderStatus status) {
 		this.status = status;
 	}
 	public Date getEntryTime() {
@@ -74,6 +77,19 @@ public class NewOrder {
 	public void setLastUpdate(Date lastUpdate) {
 		this.lastUpdate = lastUpdate;
 	}
+	public int getRemainingQty() {
+		return remainingQty;
+	}
+	public void setRemainingQty(int remainingQty) {
+		this.remainingQty = remainingQty;
+	}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	
+	}
+	
 	
 	
 }

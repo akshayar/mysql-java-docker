@@ -6,6 +6,7 @@ package com.aksh.marketlog.dao;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -19,8 +20,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.aksh.marketlog.dto.Execution;
+import com.aksh.marketlog.dto.ExecutionMessage;
 import com.aksh.marketlog.dto.HourlyAnalytics;
 import com.aksh.marketlog.dto.NewOrder;
+import com.aksh.marketlog.dto.OrderStatus;
 
 /**
  * @author arawa3
@@ -39,10 +42,13 @@ public class MarketDataRepository {
 
 	}
 
-	private static final String INSERT_ORDER = "INSERT INTO ORDERS (REFID,TYPE,STOCK,PRICE,QTY,STATUS,ENTRY_TIME,LAST_UPDATE_TIME)"
-			+ " VALUES (?,?,?,?,?,?,?,?)";
+	private static final String INSERT_ORDER = "INSERT INTO ORDERS (REFID,TYPE,STOCK,PRICE,QTY,STATUS,ENTRY_TIME,LAST_UPDATE_TIME,REM_QTY)"
+			+ " VALUES (?,?,?,?,?,?,?,?,?)";
 
+	
+	
 	public NewOrder save(NewOrder ord) {
+		ord.setRemainingQty(ord.getQty());
 
 		/*
 		 * template.update(INSERT_ORDER, new Object[] { ord.getId(),
@@ -60,12 +66,25 @@ public class MarketDataRepository {
 			ps.setString(6, ord.getStatus() + "");
 			ps.setDate(7, new java.sql.Date(ord.getEntryTime().getTime()));
 			ps.setDate(8, new java.sql.Date(System.currentTimeMillis()));
+			ps.setInt(9, ord.getRemainingQty());
 			return ps;
 		}, keyHolder);
 		ord.setId(keyHolder.getKey().intValue());
 		return ord;
 	}
 
+	private static final String UPDATE_ORDER = "UPDATE ORDERS SET STATUS=? , LAST_UPDATE_TIME =? ,REM_QTY =?  WHERE REFID=?";
+	
+	public void updateOrder(NewOrder ord){
+		template.update(con -> {
+			PreparedStatement ps = con.prepareStatement(UPDATE_ORDER);
+			ps.setString(1, ord.getStatus() + "");
+			ps.setDate(2, new java.sql.Date(System.currentTimeMillis()));
+			ps.setInt(3, ord.getRemainingQty());
+			ps.setInt(4, ord.getRefId());
+			return ps;
+		});
+	}
 	private static final String INSERT_EXECUTION = "INSERT INTO EXECUTIONS (REFID,STOCK,PRICE,QTY,EXECUTION_TIME,LAST_UPDATE)"
 			+ " VALUES (?,?,?,?,?,?)";
 
@@ -162,6 +181,40 @@ public class MarketDataRepository {
 		}
 
 		return order;
+	}
+	
+	public Execution fillOrder(int refId,ExecutionMessage exec){
+		Execution execution=null;
+		NewOrder order=getOrder(refId);
+		if(order!=null){
+			if(order.getRemainingQty()>exec.getQty()){
+				order.setStatus(OrderStatus.P);
+				order.setRemainingQty(order.getQty()-exec.getQty());
+				
+			}else if(order.getRemainingQty()==exec.getQty()){
+				order.setStatus(OrderStatus.F);
+				order.setRemainingQty(order.getQty()-exec.getQty());
+			}else{
+				throw new RuntimeException("Can't fill more than remaining, remaining:"+order.getRemainingQty()+",execQty:"+exec.getQty());
+			}
+			execution = createExecution(refId, exec, order);
+			execution=save(execution);
+			updateOrder(order);
+		}
+		
+		return execution;
+	}
+
+	private Execution createExecution(int refId, ExecutionMessage exec, NewOrder order) {
+		Execution execution;
+		execution=new Execution();
+		execution.setExectutionTime(exec.getExectutionTime());
+		execution.setLastUpdate(new Date());
+		execution.setPrice(exec.getPrice());
+		execution.setQty(exec.getQty());
+		execution.setRefId(refId);
+		execution.setStock(order.getStock());
+		return execution;
 	}
 
 	@PreDestroy

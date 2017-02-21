@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.aksh.marketlog.dto.Execution;
+import com.aksh.marketlog.dto.ExecutionMessage;
 import com.aksh.marketlog.dto.NewOrder;
+import com.aksh.marketlog.dto.OrderStatus;
+import com.aksh.marketlog.dto.OrderType;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("ut")
@@ -37,31 +42,58 @@ public class OrderControllerTest {
 	
 	
 	@Test
-	public void lastExecutionTest() {
+	public void orderLife() {
+		Random random=new Random(1000000);
+		int refId=random.nextInt();
 		Date executionTime=new Date();
-		NewOrder exec=new NewOrder();
-		exec.setEntryTime(executionTime);
-		exec.setStatus('N');
-		exec.setType('B');
-		exec.setPrice(10.0F);
-		exec.setQty(10);
-		exec.setStock("AAPL");
-		exec.setRefId(6);
+		NewOrder ord = createOrder(refId, executionTime);
 		
-		HttpEntity<NewOrder> request = new HttpEntity<>(exec);
+		HttpEntity<NewOrder> request = new HttpEntity<>(ord);
 		
 		ResponseEntity<NewOrder> res=restTemplate.postForEntity("/orders/save", request, NewOrder.class);
 		assertEquals(HttpStatus.OK,res.getStatusCode());
-
 		NewOrder fromDb=res.getBody();
-		Map< String, Object> temp=new HashMap<>();
-		temp.put("refId", exec.getRefId());
-		ResponseEntity<NewOrder> pingResponse=restTemplate.getForEntity("/orders/byref?refId="+exec.getRefId(),NewOrder.class);
-		assertEquals(HttpStatus.OK,pingResponse.getStatusCode());
-		NewOrder lastFromDB=pingResponse.getBody();
+		System.out.println("Order From DB:"+fromDb);
 		
-		assertEquals(fromDb.getId(), lastFromDB.getId());
-		System.out.println(pingResponse.getBody());
+		Map< String, Object> temp=new HashMap<>();
+		temp.put("refId", ord.getRefId());
+		ResponseEntity<NewOrder> pingResponse=restTemplate.getForEntity("/orders/byref?refId="+ord.getRefId(),NewOrder.class);
+		fromDb=pingResponse.getBody();
+		System.out.println("Get Response from db:"+fromDb);
+		assertEquals(HttpStatus.OK,pingResponse.getStatusCode());
+		assertEquals(refId,fromDb.getRefId());
+		assertEquals(ord.getStock(),fromDb.getStock());
+		assertEquals(ord.getQty(),fromDb.getQty());
+		assertEquals(ord.getPrice(),fromDb.getPrice(),0.001f);
+		
+		
+		
+		ExecutionMessage exm=new ExecutionMessage();
+		exm.setExectutionTime(new Date());
+		exm.setPrice(11.0F);
+		exm.setQty(6);
+		ResponseEntity<Execution> execResponse=restTemplate.postForEntity("/orders/execute?refId="+ord.getRefId(),exm,Execution.class);
+		Execution execR=execResponse.getBody();
+		System.out.println("Execution Response:"+execR);
+		assertEquals(HttpStatus.OK,pingResponse.getStatusCode());
+		assertEquals(refId,execR.getRefId());
+		assertEquals(exm.getPrice(),execR.getPrice(),0.0001);
+		assertEquals(exm.getQty(),execR.getQty());
+		
+	}
+
+
+
+	private NewOrder createOrder(int refId, Date executionTime) {
+		NewOrder ord=new NewOrder();
+		ord.setEntryTime(executionTime);
+		ord.setStatus(OrderStatus.O);
+		ord.setType(OrderType.B);
+		ord.setPrice(10.0F);
+		ord.setQty(10);
+		ord.setStock("AAPL");
+		ord.setRefId(refId);
+		return ord;
 	}
 	
 	
