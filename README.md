@@ -20,4 +20,4 @@ Experiments with Docker. Creating a simple web service which connects to MySQL. 
   https://docs.docker.com/machine/get-started/
   
 # Issues Faced
-# Lessons Learner
+# Lessons Learned
