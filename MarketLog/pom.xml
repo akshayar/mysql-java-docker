@@ -148,6 +148,11 @@
 											<MYSQL_ROOT_PASSWORD>aks123</MYSQL_ROOT_PASSWORD>
 											<MYSQL_DATABASE>marketlogd</MYSQL_DATABASE>
 										</env>
+										<volumes>
+											<bind>
+												<volume>/var/lib/mysql:/var/lib/mysql</volume>
+											</bind>
+										</volumes>
 										<wait>
 											<time>20000</time>
 										</wait>

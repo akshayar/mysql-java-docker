@@ -151,6 +151,9 @@ public class MarketDataRepository {
 		return ha;
 	}
 
+	private static final String GET_DAYS_ANALYTICS = "INSERT INTO EXECUTIONS (REFID,STOCK,PRICE,QTY,EXECUTION_TIME,LAST_UPDATE)"
+			+ " VALUES (?,?,?,?,?,?)";
+	
 	public Execution lastExecution() {
 		Execution execution = null;
 		List<Execution> executions = template

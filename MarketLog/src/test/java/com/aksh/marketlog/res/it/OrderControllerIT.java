@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
@@ -37,10 +36,10 @@ public class OrderControllerIT {
 	
 	@Test
 	public void orderLife() {
-		Random random=new Random(1000000);
-		int refId=random.nextInt();
+		int refId=(int)System.nanoTime();
 		Date executionTime=new Date();
 		NewOrder ord = createOrder(refId, executionTime);
+		System.out.println("Order:"+ord);
 		
 		HttpEntity<NewOrder> request = new HttpEntity<>(ord);
 		

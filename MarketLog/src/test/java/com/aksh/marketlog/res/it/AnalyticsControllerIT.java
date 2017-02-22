@@ -6,20 +6,12 @@ import java.sql.Time;
 import java.util.Date;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.aksh.marketlog.dto.HourlyAnalytics;
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("ut")
 public class AnalyticsControllerIT {
 
 
@@ -36,7 +28,7 @@ public class AnalyticsControllerIT {
 	
 	
 	@Test
-	public void lastExecutionTest() {
+	public void saveAnalytics() {
 		Date executionTime=new Date();
 		HourlyAnalytics exec=new HourlyAnalytics();
 		exec.setStock("AAPL");
