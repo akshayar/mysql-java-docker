@@ -21,3 +21,11 @@ Experiments with Docker. Creating a simple web service which connects to MySQL. 
   
 # Issues Faced
 # Lessons Learned
+# Open questions
+1. 2 Sets of configuraitons. One for Docker and another for VM. It should support running integration testing after install. 
+2. How to build the pipeline ? It should support DEV, QA and PROD installation after integration test. How to give 3 sets of docker images one for DEV , one for QA and another for prod. The deployment configuration could be different in these environments. For example PROD would have clustering , but DEV may not. What is the best approach of achieving this. 
+3. How to support native clustering? SWARM ?
+4. How to build a system with multiple micro-services? How to support multiple services and their integration?
+5. How to buid monitoring dashboard?
+6. How to package properties file outside of Jar ? And create image. 
+7. 
