@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,12 @@ public class TradeControllerIT {
 
 	private RestTemplate restTemplate=new RestTemplate();
 	private String serverUrl="http://192.168.99.100:8080";
+	@Before
+	public void setup(){
+		String dockerHostAddress=System.getProperty("docker.host.address");
+		serverUrl="http://"+(dockerHostAddress!=null?dockerHostAddress:"localhost")+":8080";
+		System.out.println("In unit test server url:"+serverUrl);
+	}
 
 	@Test
 	public void pingtest() {

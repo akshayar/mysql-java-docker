@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,11 @@ public class OrderControllerIT {
 	private RestTemplate restTemplate=new RestTemplate();
 	private String serverUrl="http://192.168.99.100:8080";
 
-	public void init(){
+	@Before
+	public void setup(){
+		String dockerHostAddress=System.getProperty("docker.host.address");
+		serverUrl="http://"+(dockerHostAddress!=null?dockerHostAddress:"localhost")+":8080";
+		System.out.println("In unit test server url:"+serverUrl);
 	}
 
 	@Test
