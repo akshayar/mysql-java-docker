@@ -146,8 +146,8 @@
 											<link>marketlog_d:db</link>
 										</links>
 										<wait>
-											<time>15000</time>
-											<url>http://${docker.host.address}:8080/info/ping</url>
+											<time>30000</time>
+											<url>http://${docker.host.address}:8080/analytics/ping</url>
 										</wait>
 									</run>
 								</image>
@@ -161,7 +161,7 @@
 										</env>
 										<volumes>
 											<bind>
-												<volume>/var/lib/mysql:/var/lib/mysql</volume>
+												<volume>/home/akshaya/mysql:/var/lib/mysql</volume>
 											</bind>
 										</volumes>
 										<wait>
