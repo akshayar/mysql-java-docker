@@ -1,5 +1,6 @@
 # mysql-java-docker
 Experiments with Docker. Creating a simple web service which connects to MySQL. The intent is to dockerize and compare the performance and other metrics agains that of Docker. 
+
 1. Create a simple web application which connects to MySQL. Use Junit to integration test. 
 2. Dockerize the application. Use docker profile to run on Docker. 
 3. Use VM profile to run on local VM. 
