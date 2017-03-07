@@ -48,6 +48,8 @@ public class MarketLogApplication {
 	@Value("${db.datasource.password:junk}")
 	private String passwd;
 
+	@Bean
+	@Profile("!heroku")
 	public DataSource dataSource(){
 		BasicDataSource basicDataSource =new BasicDataSource();
 		
@@ -62,7 +64,7 @@ public class MarketLogApplication {
 	
 	
 	@Bean
-//	@Profile("heroku")
+	@Profile("heroku")
 	public DataSource dataSourceHeroku() throws URISyntaxException{
 		BasicDataSource basicDataSource =new BasicDataSource();
 
