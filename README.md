@@ -1,5 +1,47 @@
 # mysql-java-docker
 Experiments with Docker. Creating a simple web service which connects to MySQL. The intent is to dockerize and compare the performance and other metrics agains that of Docker. 
+1. Create a simple web application which connects to MySQL. Use Junit to integration test. 
+2. Dockerize the application. Use docker profile to run on Docker. 
+3. Use VM profile to run on local VM. 
+4. Deploy on Heroku. Use heroku profile to deploy on Heroku. 
+
+# Running on local VM
+1. Create mysql DB and on that create marketlog database. 
+2. Create a user and give privileges on marketlog databse. 
+3. Update application-vm.properties
+```
+db.datasource.driver=com.mysql.jdbc.Driver
+db.datasource.url=jdbc:mysql://localhost:3306/marketlog
+db.datasource.username=muser
+db.datasource.password=aks123
+spring.datasource.platform=mysql
+
+```
+4. To integration test run `mvn verify -Pvm`
+5. To run , run `mvn spring-boot:run -Pvm`
+
+# Running on Docker
+1. On Linux VM with Docker engine -
+  1. Make sure docker machine configuration is commented in pom.xml.
+  2. Stop mysql service to avoid port conflict , run `sudo service mysql stop` 
+  3. To integration test run `mvn verify -Pdocker`
+  4. To run , run `mvn docker:start -Pdocker`
+  5. Run `docker ps` to verify to docker containers running. 
+  6. To view logs run `docker logs <container-id> -f`
+  7. To stop run , `mvn docker:stop -Pdocker`
+2. On Windows -
+  1. Create docker machine. Run `docker-machine create --driver virtualbox <machine-name>`
+  2. Uncomment docker machine configuration. Add the name of machine created above.  
+  3. Connect to docker machine. Run from powershell `docker-machine env <machine-name> | Invoke-Expression`
+  4. Rest of the command to integration test, run ,view logs, stop etc remain same as above. 
+  
+# Running on Heroku
+1. Login to Heroku. 
+2. Create Heroku app. From project root run `heroku create` . View app name by running `heroku apps`
+3. Add mysql addon. Run `heroku addons:create cleardb:ignite`
+4. Verify heroku config by running `heroku config` . CLEARDB_DATABASE_URL should be displayed.
+5. To integration test run `mvn verify -Pheroku -Dheroku.appName=<heroku-app-name>`
+6. 
 
 # Docker Learning Path
 ## Pluralsight has some great resources to learn Docker 

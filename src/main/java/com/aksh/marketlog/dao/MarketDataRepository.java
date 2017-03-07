@@ -185,6 +185,11 @@ public class MarketDataRepository {
 
 		return order;
 	}
+	public List<NewOrder> getAllOrders() {
+		List<NewOrder> orders = template.query("SELECT * FROM ORDERS ", new Object[] {  },
+				new OrderRowMapper());
+		return orders;
+	}
 	
 	public Execution fillOrder(int refId,ExecutionMessage exec){
 		Execution execution=null;

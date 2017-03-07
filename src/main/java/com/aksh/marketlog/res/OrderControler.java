@@ -1,5 +1,7 @@
 package com.aksh.marketlog.res;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,12 @@ public class OrderControler {
 	public NewOrder getOrder(@RequestParam(value="refId") int refId){
 		logger.info("Order ref id ="+refId);
 		return repository.getOrder(refId);
+		
+	}
+	
+	@RequestMapping(method=RequestMethod.GET,path="/all")
+	public List<NewOrder> getAllOrders(){
+		return repository.getAllOrders();
 		
 	}
 	
