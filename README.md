@@ -44,6 +44,47 @@ spring.datasource.platform=mysql
 6. To deploy run `mvn heroku:deploy -Pheroku`
 7. To test run `heroku open orders/all`
 
+## Heroku Datasource
+Refer `MarketLogApplication` class. For heroku profile the datasource is created by following method. 
+```java
+    @Bean
+	@Profile("heroku")
+	public DataSource dataSourceHeroku() throws URISyntaxException{
+		BasicDataSource basicDataSource =new BasicDataSource();
+
+		URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
+
+	    String username1 = dbUri.getUserInfo().split(":")[0];
+	    String password1 = dbUri.getUserInfo().split(":")[1];
+	    String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+
+		basicDataSource.setDriverClassName(driverClass);
+		basicDataSource.setUrl(dbUrl);
+		basicDataSource.setUsername(username1);
+		basicDataSource.setPassword(password1);
+		logger.info("Datasource - "+driverClass+":"+url+":"+username1+":"+password1);
+		
+		return basicDataSource;
+	}
+``` 
+
+For other profiles by following, notice `@Profile("!heroku")` -
+```java
+    @Bean
+	@Profile("!heroku")
+	public DataSource dataSource(){
+		BasicDataSource basicDataSource =new BasicDataSource();
+		
+		basicDataSource.setDriverClassName(driverClass);
+		basicDataSource.setUrl(url);
+		basicDataSource.setUsername(username);
+		basicDataSource.setPassword(passwd);
+		logger.info("Datasource - "+driverClass+":"+url+":"+username+":"+passwd);
+		
+		return basicDataSource;
+	}
+```
+
 # Docker Learning Path
 ## Pluralsight has some great resources to learn Docker 
 
