@@ -41,7 +41,8 @@ spring.datasource.platform=mysql
 3. Add mysql addon. Run `heroku addons:create cleardb:ignite`
 4. Verify heroku config by running `heroku config` . CLEARDB_DATABASE_URL should be displayed.
 5. To integration test run `mvn verify -Pheroku -Dheroku.appName=<heroku-app-name>`
-6. 
+6. To deploy run `mvn heroku:deploy -Pheroku`
+7. To test run `heroku open orders/all`
 
 # Docker Learning Path
 ## Pluralsight has some great resources to learn Docker 
