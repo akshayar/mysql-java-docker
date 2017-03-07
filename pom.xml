@@ -79,13 +79,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<configuration>
-					<mainClass>com.aksh.marketlog.MarketLogApplication</mainClass>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<executions>
@@ -111,6 +104,7 @@
 						<configuration>
 							<systemPropertyVariables>
 								<docker.host.address>${docker.host.address}</docker.host.address>
+								<integration.env>docker</integration.env>
 							</systemPropertyVariables>
 						</configuration>
 					</plugin>
@@ -217,8 +211,20 @@
 		</profile>
 		<profile>
 			<id>vm</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<configuration>
+							<systemPropertyVariables>
+								<integration.env>vm</integration.env>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>

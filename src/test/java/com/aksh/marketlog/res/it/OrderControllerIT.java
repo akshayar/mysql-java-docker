@@ -22,12 +22,11 @@ public class OrderControllerIT {
 
 
 	private RestTemplate restTemplate=new RestTemplate();
-	private String serverUrl="http://192.168.99.100:8080";
+	private String serverUrl;
 
 	@Before
 	public void setup(){
-		String dockerHostAddress=System.getProperty("docker.host.address");
-		serverUrl="http://"+(dockerHostAddress!=null?dockerHostAddress:"localhost")+":8080";
+		serverUrl=BaseIT.getServerUrl();
 		System.out.println("In unit test server url:"+serverUrl);
 	}
 

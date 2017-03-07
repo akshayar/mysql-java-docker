@@ -7,22 +7,24 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.aksh.marketlog.dto.HourlyAnalytics;
+@RunWith(SpringRunner.class)
 public class AnalyticsControllerIT {
 
 
 	private RestTemplate restTemplate=new RestTemplate();
-	private String serverUrl="http://192.168.99.100:8080";
+	private String serverUrl;
 	
 	@Before
 	public void setup(){
-		String dockerHostAddress=System.getProperty("docker.host.address");
-		serverUrl="http://"+(dockerHostAddress!=null?dockerHostAddress:"localhost")+":8080";
+		serverUrl=BaseIT.getServerUrl();
 		System.out.println("In unit test server url:"+serverUrl);
 	}
 
